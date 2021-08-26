@@ -1,22 +1,13 @@
-﻿using System.IO;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace FileWriting
 {
     public class FileWriter
     {
-        private readonly string fileName;
-        private readonly object locker = new();
-        public FileWriter(string fileName)
+        public async Task WriteAsync(WritingUnit unit, StreamWriter streamWriter)
         {
-            this.fileName = fileName;
-        }
-
-        public void Write(WritingUnit unit)
-        {
-            lock (locker)
-            {
-                File.AppendAllText(fileName, unit.StringBuilder.ToString());
-            }
+             await streamWriter.WriteAsync(unit.StringBuilder.ToString());
         }
     }
 }
