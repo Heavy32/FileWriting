@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FileWriting
@@ -8,6 +8,26 @@ namespace FileWriting
     class Program
     {
         static void Main(string[] args)
+        {
+            using StreamWriter streamWriter = new StreamWriter("Text.txt");
+            var fileWriter = new FileWriter();
+            var list = CreateData();
+
+            Task[] tasks = new Task[list.Count];
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                tasks[i] = fileWriter.WriteAsync(list[i], streamWriter);
+            }
+
+            Task.WaitAll(tasks);
+        }
+
+        /// <summary>
+        ///     создаёт массив объектов, внутри них только Stringbuilder
+        /// </summary>
+        /// <returns></returns>
+        private static List<WritingUnit> CreateData()
         {
             var u1 = new WritingUnit();
 
@@ -39,9 +59,9 @@ namespace FileWriting
 
             var u3 = new WritingUnit();
 
-            var s10 = "$$$$$$$";
+            var s10 = "$$$$$$$$$$$$$$$";
             var s11 = "-------";
-            var s12 = "@@@@@@@@@@@";
+            var s12 = "!!!!!!!!@@@";
             var s13 = "&&&&&&&&&&";
 
             u3.StringBuilder.Append(s10);
@@ -49,16 +69,8 @@ namespace FileWriting
             u3.StringBuilder.Append(s12);
             u3.StringBuilder.Append(s13);
             u3.StringBuilder.Append(Environment.NewLine);
-            List<WritingUnit> list = new List<WritingUnit> { u1, u2, u3 };
 
-            FileWriter fileWriter = new FileWriter("Text.txt");
-
-            Parallel.ForEach(
-                list,
-                (unit) =>
-                {
-                    fileWriter.Write(unit);
-                });
+            return new List<WritingUnit> { u1, u2, u3 };
         }
     }
 }
